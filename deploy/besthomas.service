@@ -1,0 +1,30 @@
+[Unit]
+Description=besthomas.com personal site (Next.js)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=besthomas
+Group=besthomas
+WorkingDirectory=/opt/besthomas/app
+# ADMIN_PASSWORD, SITE_URL, SITE_TIMEZONE
+EnvironmentFile=/etc/besthomas.env
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=HOSTNAME=127.0.0.1
+Environment=PORT=3100
+Environment=CONTENT_DIR=/var/lib/besthomas
+ExecStart=/usr/local/bin/node server.js
+Restart=on-failure
+RestartSec=5
+
+# The app only needs to write its content folder (and Next's cache).
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/besthomas /opt/besthomas/app/.next/cache
+
+[Install]
+WantedBy=multi-user.target
