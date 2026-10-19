@@ -21,7 +21,9 @@ export function normalizeSvg(raw: string): { svg: string } | { error: string } {
     .trim()
     .replace(/^<\?xml[\s\S]*?\?>/i, "")
     .replace(/<!DOCTYPE[\s\S]*?>/i, "")
-    .replace(/<!--[\s\S]*?-->/g, "")
+    // Drop comments, except "<!--! ... -->" ones: icon sets such as Font Awesome put their required
+    // licence attribution there.
+    .replace(/<!--(?!!)[\s\S]*?-->/g, "")
     // Belt and braces: icons are only used as images, where scripts never run, but don't keep them anyway.
     .replace(/<script[\s\S]*?<\/script\s*>/gi, "")
     .replace(/<foreignObject[\s\S]*?<\/foreignObject\s*>/gi, "")
