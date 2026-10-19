@@ -24,6 +24,9 @@ export async function SiteShell({ lang, children }: { lang: Lang; children: Reac
         <div className="paper">
           {children}
           <footer className="site-footer rise" style={delay(820)}>
+            <div className="whitespace-nowrap">
+              © {site[lang].name} {year}
+            </div>
             <nav aria-label={UI[lang].socialNav} data-icon-style={site.iconStyle}>
               {site.links.map((link, i) => (
                 <Fragment key={`${i}-${link.url}`}>
@@ -45,9 +48,6 @@ export async function SiteShell({ lang, children }: { lang: Lang; children: Reac
                 </Fragment>
               ))}
             </nav>
-            <div className="whitespace-nowrap">
-              © {site[lang].name} {year}
-            </div>
           </footer>
         </div>
       </div>
