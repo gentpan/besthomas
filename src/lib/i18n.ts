@@ -36,6 +36,13 @@ export const UI = {
     backHome: "回到首页",
     switchTo: "EN",
     switchAria: "Read in English",
+    home: "首页",
+    contents: "目录",
+    backToTop: "回到顶部",
+    viewImage: "查看大图",
+    imageViewer: "图片浏览",
+    prevImage: "上一张",
+    nextImage: "下一张",
   },
   en: {
     noPosts: "No posts yet.",
@@ -52,6 +59,13 @@ export const UI = {
     backHome: "Back to home",
     switchTo: "中文",
     switchAria: "阅读中文版",
+    home: "Home",
+    contents: "Contents",
+    backToTop: "Back to top",
+    viewImage: "View larger",
+    imageViewer: "Image viewer",
+    prevImage: "Previous image",
+    nextImage: "Next image",
   },
 } satisfies Record<Lang, Record<string, unknown>>;
 

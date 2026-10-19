@@ -5,10 +5,11 @@ import { LikeButton } from "@/components/like-button";
 import { isAdmin } from "@/lib/auth";
 import { formatLongDate, homePath, otherLang, postPath, UI, type Lang } from "@/lib/i18n";
 import { getLikes } from "@/lib/likes";
-import { excerpt, renderMarkdown } from "@/lib/markdown";
+import { excerpt, renderArticle } from "@/lib/markdown";
 import { delay } from "@/lib/motion";
 import { getPost, listPosts, type Post } from "@/lib/posts";
 import { getSiteSettings } from "@/lib/site";
+import { ArticleExtras } from "./article-extras";
 
 /** A post visible to the current visitor (drafts only for the logged-in admin). */
 async function load(lang: Lang, slug: string): Promise<Post | null> {
@@ -47,9 +48,9 @@ export async function PostView({ lang, slug }: { lang: Lang; slug: string }) {
   const post = await load(lang, slug);
   if (!post) notFound();
 
-  const [site, html, published, likes] = await Promise.all([
+  const [site, { html, toc }, published, likes] = await Promise.all([
     getSiteSettings(),
-    renderMarkdown(post.body),
+    renderArticle(post.body),
     listPosts({ lang }),
     getLikes(post),
   ]);
@@ -60,7 +61,8 @@ export async function PostView({ lang, slug }: { lang: Lang; slug: string }) {
   const older = index >= 0 && index < published.length - 1 ? published[index + 1] : null;
 
   return (
-    <main className="page">
+    <main className="page post-page">
+      <ArticleExtras key={`${lang}/${post.slug}`} lang={lang} toc={toc} />
       <article>
         <Link href={homePath(lang)} className="back-link rise" style={delay(60)}>
           <span aria-hidden="true">←</span> {site[lang].name}

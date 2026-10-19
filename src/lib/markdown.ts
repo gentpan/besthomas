@@ -9,6 +9,10 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
+import type { VFile } from "vfile";
+
+/** A section heading of an article, for the table of contents. */
+export type TocItem = { id: string; text: string; level: 2 | 3 };
 
 const classes = (node: Element): string[] => {
   const c: unknown = node.properties.className;
@@ -16,6 +20,33 @@ const classes = (node: Element): string[] => {
 };
 
 const isWhitespace = (n: ElementContent) => n.type === "text" && !n.value.trim();
+
+const textOf = (node: Element | ElementContent): string =>
+  node.type === "text" ? node.value : node.type === "element" ? node.children.map(textOf).join("") : "";
+
+/** Give h2/h3 an id (kept readable, Chinese included) and record them as the table of contents. */
+function rehypeHeadings() {
+  return (tree: Root, file: VFile) => {
+    const toc: TocItem[] = [];
+    const used = new Set<string>();
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName !== "h2" && node.tagName !== "h3") return;
+      const text = textOf(node).trim();
+      const base =
+        text
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^\p{L}\p{N}-]/gu, "")
+          .replace(/^-+|-+$/g, "") || "section";
+      let id = base;
+      for (let n = 2; used.has(id); n++) id = `${base}-${n}`;
+      used.add(id);
+      node.properties.id = id;
+      if (text) toc.push({ id, text, level: node.tagName === "h2" ? 2 : 3 });
+    });
+    file.data.toc = toc;
+  };
+}
 
 /** External links open in a new tab; images lazy-load; a paragraph holding only images becomes a wide <figure>. */
 function rehypeSiteTweaks() {
@@ -65,20 +96,27 @@ const processor = unified()
     onError: () => {},
   })
   .use(rehypeSiteTweaks)
+  .use(rehypeHeadings)
   .use(rehypeStringify);
 
-const cache = new Map<string, string>();
+const cache = new Map<string, { html: string; toc: TocItem[] }>();
 const CACHE_LIMIT = 300;
 
-/** Markdown → HTML. Content is written by the site owner only, so raw HTML is allowed. */
-export async function renderMarkdown(markdown: string): Promise<string> {
+/** Markdown → HTML plus its table of contents. Content is written by the site owner only, so raw HTML is allowed. */
+export async function renderArticle(markdown: string): Promise<{ html: string; toc: TocItem[] }> {
   const key = createHash("sha1").update(markdown).digest("hex");
   const hit = cache.get(key);
-  if (hit !== undefined) return hit;
-  const html = String(await processor.process(markdown));
+  if (hit) return hit;
+  const file = await processor.process(markdown);
+  const result = { html: String(file), toc: (file.data.toc as TocItem[] | undefined) ?? [] };
   if (cache.size >= CACHE_LIMIT) cache.delete(cache.keys().next().value!);
-  cache.set(key, html);
-  return html;
+  cache.set(key, result);
+  return result;
+}
+
+/** Markdown → HTML. */
+export async function renderMarkdown(markdown: string): Promise<string> {
+  return (await renderArticle(markdown)).html;
 }
 
 /** Plain-text excerpt for meta descriptions and RSS. */
