@@ -31,7 +31,7 @@ export function FooterLinksEditor({
     [next[i], next[i + dir]] = [next[i + dir], next[i]];
     onChange(next);
   };
-  const withIcons = links.filter((l) => l.icon && "svg" in normalizeSvg(l.icon));
+  const withIcons = links.filter((l) => l.url && l.icon && "svg" in normalizeSvg(l.icon));
 
   return (
     <div>
@@ -80,6 +80,9 @@ export function FooterLinksEditor({
                   </button>
                 </div>
               </div>
+              {!link.url.trim() && (
+                <p className="mt-1.5 text-[12.5px] text-amber-700 dark:text-amber-400">还没填地址，前台暂不显示这个链接。</p>
+              )}
 
               {showIcon ? (
                 <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_auto]">

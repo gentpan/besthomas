@@ -7,6 +7,7 @@ import { HEX_COLOR, normalizeSvg, type IconStyle } from "./svg-icon";
 
 export type SiteLink = {
   label: string;
+  /** Empty while the address isn't known yet: the link is kept in the admin panel but not shown on the site. */
   url: string;
   /** Optional SVG code; when set, the footer shows the icon instead of the label. */
   icon?: string;
@@ -90,7 +91,7 @@ function sanitize(input: unknown): SiteSettings {
           if (typeof l.color === "string" && HEX_COLOR.test(l.color.trim())) link.color = l.color.trim();
           return link;
         })
-        .filter((l) => l.label && l.url)
+        .filter((l) => l.label)
     : DEFAULT_SETTINGS.links;
   return {
     zh: sanitizeLocale(o.zh ?? legacyZh, DEFAULT_SETTINGS.zh),
@@ -110,7 +111,7 @@ export async function saveSiteSettings(input: unknown): Promise<SiteSettings> {
   }
   const settings = sanitize(input);
   for (const link of settings.links) {
-    if (!/^(https?:\/\/|mailto:|\/)/.test(link.url)) {
+    if (link.url && !/^(https?:\/\/|mailto:|\/)/.test(link.url)) {
       throw new ContentError(`链接 “${link.label}” 的地址需要以 https://、http://、mailto: 或 / 开头`);
     }
     if (link.icon) {

@@ -12,6 +12,8 @@ export async function SiteShell({ lang, children }: { lang: Lang; children: Reac
   const [site, translations] = await Promise.all([getSiteSettings(), listPosts({ lang: otherLang(lang) })]);
   const year = new Date().getFullYear();
   const external = (url: string) => /^https?:\/\//.test(url);
+  // Links without an address are still being set up in the admin panel; don't show them yet.
+  const links = site.links.filter((l) => l.url);
 
   return (
     <>
@@ -28,10 +30,10 @@ export async function SiteShell({ lang, children }: { lang: Lang; children: Reac
               © {site[lang].name} {year}
             </div>
             <nav aria-label={UI[lang].socialNav} data-icon-style={site.iconStyle}>
-              {site.links.map((link, i) => (
+              {links.map((link, i) => (
                 <Fragment key={`${i}-${link.url}`}>
                   {/* Dots only separate two text links; icons are spaced by the gap alone. */}
-                  {i > 0 && !link.icon && !site.links[i - 1].icon && <span aria-hidden="true">·</span>}
+                  {i > 0 && !link.icon && !links[i - 1].icon && <span aria-hidden="true">·</span>}
                   {link.icon ? (
                     <FooterIcon
                       svg={link.icon}
