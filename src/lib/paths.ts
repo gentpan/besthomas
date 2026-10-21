@@ -9,6 +9,7 @@ export const UPLOADS_DIR = path.join(DATA_DIR, "uploads");
 export const SITE_FILE = path.join(DATA_DIR, "site.json");
 export const LIKES_FILE = path.join(DATA_DIR, "likes.json");
 export const PASSKEYS_FILE = path.join(DATA_DIR, "passkeys.json");
+export const PROJECTS_FILE = path.join(DATA_DIR, "projects.json");
 
 export const SITE_URL = (process.env.SITE_URL || "http://localhost:3000").replace(/\/+$/, "");
 export const SITE_TIMEZONE = process.env.SITE_TIMEZONE || "Asia/Shanghai";

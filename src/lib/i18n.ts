@@ -1,5 +1,7 @@
 /** Languages of the public site. Chinese lives at /, English at /en. Safe to import from client code. */
 
+import type { ProjectKind } from "./project-kinds";
+
 export const LANGS = ["zh", "en"] as const;
 export type Lang = (typeof LANGS)[number];
 
@@ -19,6 +21,11 @@ export const homePath = (lang: Lang) => (lang === "zh" ? "/" : "/en");
 export const postPath = (lang: Lang, slug: string) => (lang === "zh" ? `/${slug}` : `/en/${slug}`);
 
 export const feedPath = (lang: Lang) => (lang === "zh" ? "/feed.xml" : "/en/feed.xml");
+
+/** Path segment of the projects page (reserved, so no post can take it). */
+export const PROJECTS_SEGMENT = "projects";
+
+export const projectsPath = (lang: Lang) => (lang === "zh" ? `/${PROJECTS_SEGMENT}` : `/en/${PROJECTS_SEGMENT}`);
 
 export const UI = {
   zh: {
@@ -43,6 +50,13 @@ export const UI = {
     imageViewer: "图片浏览",
     prevImage: "上一张",
     nextImage: "下一张",
+    sections: "栏目",
+    posts: "文章",
+    projects: "项目",
+    noProjects: "还没有项目。",
+    source: "源码",
+    projectsDescription: (name: string) => `${name} 做过的项目`,
+    kinds: { website: "网站", app: "App", extension: "Chrome 插件", other: "其他" } satisfies Record<ProjectKind, string>,
   },
   en: {
     noPosts: "No posts yet.",
@@ -66,6 +80,13 @@ export const UI = {
     imageViewer: "Image viewer",
     prevImage: "Previous image",
     nextImage: "Next image",
+    sections: "Sections",
+    posts: "Writing",
+    projects: "Projects",
+    noProjects: "No projects yet.",
+    source: "Source",
+    projectsDescription: (name: string) => `Things ${name} has made`,
+    kinds: { website: "Websites", app: "Apps", extension: "Chrome extensions", other: "Other" } satisfies Record<ProjectKind, string>,
   },
 } satisfies Record<Lang, Record<string, unknown>>;
 

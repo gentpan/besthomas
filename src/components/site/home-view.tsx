@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatListDate } from "@/lib/dates";
-import { feedPath, homePath, postPath, UI, type Lang } from "@/lib/i18n";
+import { feedPath, homePath, postPath, projectsPath, UI, type Lang } from "@/lib/i18n";
 import { renderMarkdown } from "@/lib/markdown";
 import { delay } from "@/lib/motion";
 import { listPosts } from "@/lib/posts";
+import { listProjects } from "@/lib/projects";
 import { getSiteSettings } from "@/lib/site";
 
 export async function homeMetadata(lang: Lang): Promise<Metadata> {
@@ -24,8 +25,9 @@ export async function homeMetadata(lang: Lang): Promise<Metadata> {
 }
 
 export async function HomeView({ lang }: { lang: Lang }) {
-  const [site, posts] = await Promise.all([getSiteSettings(), listPosts({ lang })]);
+  const [site, posts, projects] = await Promise.all([getSiteSettings(), listPosts({ lang }), listProjects(lang)]);
   const { name, intro } = site[lang];
+  const t = UI[lang];
   const introHtml = await renderMarkdown(intro);
 
   return (
@@ -35,6 +37,16 @@ export async function HomeView({ lang }: { lang: Lang }) {
       </h1>
 
       {intro && <div className="intro rise" style={delay(260)} dangerouslySetInnerHTML={{ __html: introHtml }} />}
+
+      {/* Header for the list below, and the way to the projects page (only once there are projects to show). */}
+      {projects.items.length > 0 && (
+        <nav className="section-nav rise" style={delay(400)} aria-label={t.sections}>
+          <Link href={homePath(lang)} aria-current="page">
+            {t.posts}
+          </Link>
+          <Link href={projectsPath(lang)}>{t.projects}</Link>
+        </nav>
+      )}
 
       {posts.length > 0 ? (
         <ul className="post-list">
@@ -52,7 +64,7 @@ export async function HomeView({ lang }: { lang: Lang }) {
         </ul>
       ) : (
         <p className="empty-note rise" style={delay(480)}>
-          {UI[lang].noPosts}
+          {t.noPosts}
         </p>
       )}
 

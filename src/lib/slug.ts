@@ -18,6 +18,7 @@ export const RESERVED_SLUGS = new Set([
   "icon",
   "favicon",
   "login",
+  "projects",
   "_next",
   "en",
   "zh",

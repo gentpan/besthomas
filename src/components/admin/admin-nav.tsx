@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const LINKS = [
   { href: "/admin", label: "文章", match: (p: string) => p === "/admin" || p.startsWith("/admin/posts") },
+  { href: "/admin/projects", label: "项目", match: (p: string) => p.startsWith("/admin/projects") },
   { href: "/admin/import", label: "导入 Markdown", match: (p: string) => p.startsWith("/admin/import") },
   { href: "/admin/settings", label: "站点设置", match: (p: string) => p.startsWith("/admin/settings") },
 ];

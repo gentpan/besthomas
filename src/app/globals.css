@@ -772,6 +772,258 @@ html:has(.home-page) {
   }
 }
 
+/* Writing / Projects: header of the homepage list, shown once there are projects. */
+.section-nav {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin-top: 48px;
+  font-size: 14px;
+  font-weight: var(--text-weight);
+  line-height: 1.6;
+}
+
+.section-nav a {
+  position: relative;
+  color: var(--ink-faint);
+  text-decoration: none;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.section-nav a:hover,
+.section-nav a:focus-visible {
+  color: var(--accent);
+}
+
+.section-nav a[aria-current="page"] {
+  color: var(--ink-title);
+}
+
+.section-nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 -5px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.section-nav + .post-list,
+.section-nav + .empty-note {
+  margin-top: 16px;
+}
+
+.home-page .section-nav {
+  flex-shrink: 0;
+  margin-top: clamp(16px, 5.5vh, 56px);
+}
+
+.home-page .section-nav + .post-list,
+.home-page .section-nav + .empty-note {
+  margin-top: clamp(8px, 1.8vh, 18px);
+}
+
+/* ---------- Projects ---------- */
+
+.projects-page .intro {
+  margin-top: 20px;
+}
+
+.project-groups {
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+@media (min-width: 1024px) {
+  .project-groups {
+    margin-top: 72px;
+    gap: 56px;
+  }
+}
+
+.project-group-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: var(--text-weight);
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+}
+
+.project-group-title::after {
+  content: "";
+  flex: 1;
+  min-width: 24px;
+  height: 1.5px;
+  color: var(--rule);
+  background-image: radial-gradient(circle, currentColor 0.75px, transparent 0.75px);
+  background-size: 5px 1.5px;
+  background-repeat: space no-repeat;
+}
+
+.project {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+  padding: 16px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (min-width: 640px) {
+  .project {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+
+/* App-icon tile: the uploaded image, or the name's first letter. */
+.project-icon {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 23%;
+  object-fit: cover;
+  background: var(--code-bg);
+  box-shadow:
+    0 0 0 0.5px var(--hairline),
+    0 1px 2px rgb(0 0 0 / 0.05);
+  transition: transform 0.6s var(--ease-out);
+}
+
+.project-icon-letter {
+  display: grid;
+  place-items: center;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  line-height: 1;
+  color: var(--ink-muted);
+  user-select: none;
+}
+
+.project-body {
+  min-width: 0;
+  padding-top: 1px;
+}
+
+.project-name {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 450;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--ink-title);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.project-arrow {
+  display: inline-block;
+  margin-left: 3px;
+  font-family: var(--font-sans);
+  font-size: 0.62em;
+  vertical-align: 0.4em;
+  line-height: 1;
+  color: var(--ink-faint);
+  transition:
+    transform 0.4s var(--ease-out),
+    color 0.15s;
+}
+
+/* The name's link covers the whole entry; the source link sits above it. */
+.project-link::before {
+  content: "";
+  position: absolute;
+  inset: 6px -12px;
+  border-radius: 12px;
+}
+
+.project-link:focus-visible {
+  outline: none;
+}
+
+.project-link:focus-visible::before {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.project-desc {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: var(--text-weight);
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+
+.project-desc:lang(zh) {
+  line-height: 1.75;
+}
+
+.project-source {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: var(--text-weight);
+  color: var(--ink-faint);
+  text-decoration: underline dotted;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 3px;
+  transition:
+    color 0.15s,
+    text-decoration-color 0.15s;
+}
+
+.project-source:hover,
+.project-source:focus-visible {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+@media (min-width: 640px) {
+  .project-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project-name {
+    font-size: 19px;
+  }
+}
+
+.project:has(.project-link:hover) .project-name,
+.project-link:focus-visible {
+  color: var(--accent);
+}
+
+.project:has(.project-link:hover) .project-arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+.project:has(.project-link:hover) .project-icon {
+  transform: scale(1.06);
+}
+
+.project:has(.project-link:hover) .post-leader,
+.project:has(.project-link:hover) .post-date {
+  opacity: 0.4;
+}
+
+.project:has(.project-link:active) {
+  transform: scale(0.995);
+}
+
 /* ---------- Article ---------- */
 
 .back-link {
